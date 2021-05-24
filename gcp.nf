@@ -186,6 +186,7 @@ log.info "Trait File                              = ${params.traitfile}"
 log.info "VCF                                     = ${params.vcf}"
 log.info "Significance Threshold                  = ${params.sthresh}"
 log.info "Result Directory                        = ${params.out}"
+log.info "Isotype file                            = ${params.data_dir}/isotypes/strain_isotype_lookup.tsv"
 log.info ""
 }
 
