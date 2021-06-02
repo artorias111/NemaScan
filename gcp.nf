@@ -13,7 +13,7 @@ date = new Date().format( 'yyyyMMdd' )
 /*
 ~ ~ ~ > * Parameters: common to all analyses
 */
-//params.traitfile   = null
+//params.trait_file   = null
 //params.vcf         = null
 params.help        = null
 if(params.simulate) {
@@ -44,16 +44,25 @@ if(params.debug) {
     params.vcf = "330_TEST.vcf.gz"
     vcf = Channel.fromPath("${workflow.projectDir}/input_data/elegans/genotypes/330_TEST.vcf.gz")
     vcf_index = Channel.fromPath("${workflow.projectDir}/input_data/elegans/genotypes/330_TEST.vcf.gz.tbi")
-    params.traitfile = "${workflow.projectDir}/input_data/elegans/phenotypes/FileS2_wipheno.tsv"
+    params.trait_file = "${workflow.projectDir}/input_data/elegans/phenotypes/FileS2_wipheno.tsv"
     // debug can use same vcf for impute and normal
     impute_vcf = Channel.fromPath("${workflow.projectDir}/input_data/elegans/genotypes/330_TEST.vcf.gz")
     impute_vcf_index = Channel.fromPath("${workflow.projectDir}/input_data/elegans/genotypes/330_TEST.vcf.gz.tbi")
     ann_file = Channel.fromPath("${workflow.projectDir}/input_data/elegans/genotypes/WI.330_TEST.strain-annotation.bcsq.tsv")
 } else { // does this work with gcp config? which takes preference?
-    vcf = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.hard-filter.isotype.vcf.gz")
-    vcf_index = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.hard-filter.isotype.vcf.gz.tbi")
-    impute_vcf = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.impute.isotype.vcf.gz")
-    impute_vcf_index = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.impute.isotype.vcf.gz.tbi")
+//    vcf = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.hard-filter.isotype.vcf.gz")
+//    vcf_index = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.hard-filter.isotype.vcf.gz.tbi")
+//    impute_vcf = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.impute.isotype.vcf.gz")
+//    impute_vcf_index = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.impute.isotype.vcf.gz.tbi")
+//    params.vcf = "330_TEST.vcf.gz"
+    vcf = Channel.fromPath("${params.vcf}")
+    vcf_index = Channel.fromPath("${params.vcf_index}")
+    // debug can use same vcf for impute and normal
+    impute_vcf = Channel.fromPath("${params.impute_vcf}")
+    impute_vcf_index = Channel.fromPath("${params.impute_vcf_index}")
+    ann_file = Channel.fromPath("${params.ann_file}")
+    isotype_file = Channel.fromPath("${params.isotype_file}")
+    trait_file = Channel.fromPath("${params.trait_file}")
 }
 
 
@@ -182,11 +191,11 @@ O~~      O~~  O~~~~   O~~~  O~  O~~  O~~ O~~~  O~~ ~~     O~~~  O~~ O~~~O~~~  O~
 
     '''
 log.info ""
-log.info "Trait File                              = ${params.traitfile}"
+log.info "Trait File                              = ${params.trait_file}"
 log.info "VCF                                     = ${params.vcf}"
 log.info "Significance Threshold                  = ${params.sthresh}"
 log.info "Result Directory                        = ${params.out}"
-log.info "Isotype file                            = ${params.data_dir}/isotypes/strain_isotype_lookup.tsv"
+log.info "Isotype file                            = ${params.isotype_file}"
 log.info ""
 }
 
@@ -202,8 +211,8 @@ workflow {
     if(params.maps) {
 
         // Fix strain names
-        Channel.fromPath("${params.traitfile}")
-            .combine(Channel.fromPath("${params.data_dir}/isotypes/strain_isotype_lookup.tsv")) | fix_strain_names_bulk
+        trait_file
+            .combine(isotype_file) | fix_strain_names_bulk
         traits_to_map = fix_strain_names_bulk.out.fixed_strain_phenotypes
                 .flatten()
                 .map { file -> tuple(file.baseName.replaceAll(/pr_/,""), file) }
@@ -1418,7 +1427,7 @@ workflow.onComplete {
 
     { Parameters }
     ---------------------------
-    Phenotype File                          = ${params.traitfile}
+    Phenotype File                          = ${params.trait_file}
     VCF                                     = ${params.vcf}
 
     Significance Threshold                  = ${params.sthresh}
