@@ -59,7 +59,7 @@ if(params.debug) {
     impute_vcf = Channel.fromPath("gs://caendr-data/releases/20210121/variation/WI.20210121.impute.isotype.vcf.gz")
     impute_vcf_index = Channel.fromPath("gs://caendr-data/releases/20210121/variation/WI.20210121.impute.isotype.vcf.gz.tbi")
 
-    ann_file = "gs://caendr-data/releases/20210121/variation/WI.20210121.strain-annotation.bcsq.tsv"
+    ann_file = Channel.fromPath("gs://caendr-data/releases/20210121/variation/WI.20210121.strain-annotation.bcsq.tsv")
 } else {
     vcf_file = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.hard-filter.isotype.vcf.gz")
     vcf_index = Channel.fromPath("/projects/b1059/data/c_elegans/WI/variation/${params.vcf}/vcf/WI.${params.vcf}.hard-filter.isotype.vcf.gz.tbi")
