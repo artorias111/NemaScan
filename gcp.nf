@@ -53,11 +53,11 @@ if(params.debug) {
     
     ann_file = Channel.fromPath("${workflow.projectDir}/input_data/elegans/genotypes/WI.330_TEST.strain-annotation.bcsq.tsv")
 } else if(params.gcp) { 
-    vcf_file = "gs://caendr-data/releases/20210121/variation/WI.20210121.hard-filter.isotype.vcf.gz"
-    vcf_index = "gs://caendr-data/releases/20210121/variation/WI.20210121.hard-filter.isotype.vcf.gz.tbi"
+    vcf_file = Channel.fromPath("gs://caendr-data/releases/20210121/variation/WI.20210121.hard-filter.isotype.vcf.gz")
+    vcf_index = Channel.fromPath("gs://caendr-data/releases/20210121/variation/WI.20210121.hard-filter.isotype.vcf.gz.tbi")
 
-    impute_vcf = "gs://caendr-data/releases/20210121/variation/WI.20210121.impute.isotype.vcf.gz"
-    impute_vcf_index = "gs://caendr-data/releases/20210121/variation/WI.20210121.impute.isotype.vcf.gz.tbi"
+    impute_vcf = Channel.fromPath("gs://caendr-data/releases/20210121/variation/WI.20210121.impute.isotype.vcf.gz")
+    impute_vcf_index = Channel.fromPath("gs://caendr-data/releases/20210121/variation/WI.20210121.impute.isotype.vcf.gz.tbi")
 
     ann_file = "gs://caendr-data/releases/20210121/variation/WI.20210121.strain-annotation.bcsq.tsv"
 } else {
