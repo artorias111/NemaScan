@@ -190,6 +190,8 @@ log.info "Trait File                              = ${params.traitfile}"
 log.info "VCF                                     = ${params.vcf}"
 log.info "Significance Threshold                  = ${params.sthresh}"
 log.info "Result Directory                        = ${params.out}"
+log.info "-----------------------------------------------------------"
+log.info "Git info: $workflow.repository - $workflow.revision [$workflow.commitId]"
 log.info ""
 }
 
